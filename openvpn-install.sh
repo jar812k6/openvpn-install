@@ -181,7 +181,7 @@ else
 	echo "   4) NTT"
 	echo "   5) Hurricane Electric"
 	echo "   6) Google"
-	read -p "DNS [1-6]: " -e -i 1 DNS
+	read -p "DNS [1-6]: " -e -i 6 DNS
 	echo ""
 	echo "Finally, tell me your name for the client cert"
 	echo "Please, use one word only, no special characters"
@@ -297,14 +297,16 @@ crl-verify /etc/openvpn/easy-rsa/pki/crl.pem" >> /etc/openvpn/server.conf
 		iptables -I INPUT -p udp --dport $PORT -j ACCEPT
 		iptables -I FORWARD -s 10.8.0.0/24 -j ACCEPT
 		iptables -I FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-##Prevent any port 25 email accesses
-iptables -A OUTPUT -p tcp --dport 25 -j REJECT		
-##Prevent any user from conecting accept those with authorized ip address		
-iptables -A FRIENDS -j DROP
 		sed -i "1 a\iptables -I INPUT -p udp --dport $PORT -j ACCEPT" $RCLOCAL
 		sed -i "1 a\iptables -I FORWARD -s 10.8.0.0/24 -j ACCEPT" $RCLOCAL
 		sed -i "1 a\iptables -I FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT" $RCLOCAL
 	fi
+
+##Prevent any port 25 email accesses
+iptables -A OUTPUT -p tcp --dport 25 -j REJECT		
+##Prevent any user from conecting accept those with authorized ip addresses		
+iptables -A FRIENDS -j DROP
+
 	# And finally, restart OpenVPN
 	if [[ "$OS" = 'debian' ]]; then
 		# Little hack to check for systemd
