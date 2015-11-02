@@ -291,12 +291,17 @@ crl-verify /etc/openvpn/easy-rsa/pki/crl.pem" >> /etc/openvpn/server.conf
 		sed -i "1 a\iptables -I FORWARD -s 10.8.0.0/24 -j ACCEPT" $RCLOCAL
 		sed -i "1 a\iptables -I FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT" $RCLOCAL
 	fi
+################################################################################
+##Obtain and accept client (home) ip address
+clientip=$(echo $SSH_CONNECTION | awk '{print $1}')
+iptables -A INPUT -s $clientip/32 -j ACCEPT
 
-##Prevent any port 25 email accesses
-iptables -A OUTPUT -p tcp --dport 25 -j REJECT		
-##Prevent any user from conecting accept those with authorized ip addresses		
-iptables -A FRIENDS -j DROP
+##Prevent any port 25 activity
+iptables -A OUTPUT -p tcp --dport 25 -j REJECT	
 
+##Prevent any user from connecting, accept those with authorized ip addresses		
+iptables --policy INPUT DROP
+################################################################################
 	# And finally, restart OpenVPN
 	if [[ "$OS" = 'debian' ]]; then
 		# Little hack to check for systemd
