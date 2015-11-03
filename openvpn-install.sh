@@ -294,13 +294,13 @@ crl-verify /etc/openvpn/easy-rsa/pki/crl.pem" >> /etc/openvpn/server.conf
 ################################################################################
 ##Obtain and accept client (home) ip address
 clientip=$(echo $SSH_CONNECTION | awk '{print $1}')
-iptables -A INPUT -s $clientip/32 -j ACCEPT
+iptables -A INPUT -p udp -s $clientip/32 --dport 1194 -j ACCEPT
 
 ##Prevent any port 25 activity
 iptables -A OUTPUT -p tcp --dport 25 -j REJECT	
 
 ##Prevent any user from connecting, accept those with authorized ip addresses		
-#iptables --policy INPUT DROP
+iptables -A INPUT -p udp -s 0.0.0.0/0 --dport 1194 -j DROP
 ################################################################################
 	# And finally, restart OpenVPN
 	if [[ "$OS" = 'debian' ]]; then
