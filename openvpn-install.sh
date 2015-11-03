@@ -300,7 +300,7 @@ iptables -A INPUT -s $clientip/32 -j ACCEPT
 iptables -A OUTPUT -p tcp --dport 25 -j REJECT	
 
 ##Prevent any user from connecting, accept those with authorized ip addresses		
-iptables --policy INPUT DROP
+#iptables --policy INPUT DROP
 ################################################################################
 	# And finally, restart OpenVPN
 	if [[ "$OS" = 'debian' ]]; then
