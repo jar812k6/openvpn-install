@@ -173,7 +173,7 @@ else
 	echo "   6) Google"
 	read -p "DNS [1-6]: " -e -i 6 DNS
 	echo ""
-	echo "Finally, tell me your name for the client cert"
+	echo "Finally, tell me your filename for the client without .ovpn added"
 	echo "Please, use one word only, no special characters"
 	read -p "Client name: " -e -i client CLIENT
 	echo ""
